@@ -1,67 +1,130 @@
-# سیستم مدیریت خوابگاه و سلف دانشگاه
+# DormHub Manager
 
-یک سیستم حرفه‌ای مدیریت خوابگاه و سلف دانشگاه با Django
+**DormHub Manager** is a professional university dormitory and cafeteria management system built with Django. It provides a comprehensive platform for both students and administrators to manage dormitory accommodations, meal orders, and maintenance requests efficiently.
 
-## ویژگی‌ها
+---
 
-- **دوزبانه**: فارسی / انگلیسی (با پشتیبانی RTL)
-- **تم دارک و لایت**: قابل تغییر از نوار بالا
-- **خوابگاه دو بخشی**: بخش برادران و خواهران
-- **مدیریت اتاق و تخت**: نمایش هم‌اتاقی‌ها و شماره تخت
-- **سیستم تیکت**: گزارش مشکلات اتاق + پاسخ مدیر
-- **سفارش غذای هفتگی**: منوی هفتگی + موجودی هر دانشجو
-- **پنل دانشجو و پنل مدیر** جداگانه
-- **مدیریت موجودی** توسط ادمین
+## ✨ Features
 
-## نصب و راه‌اندازی
+| Feature | Description |
+|---------|-------------|
+| **🌐 Bilingual** | Full Persian / English support with RTL compatibility |
+| **🌓 Dark & Light Themes** | Toggle between themes from the navigation bar |
+| **🏠 Dual-Section Dormitory** | Separate sections for brothers and sisters |
+| **🛏️ Room & Bed Management** | View roommates and bed numbers |
+| **🎫 Ticket System** | Report room issues + admin response management |
+| **🍽️ Weekly Meal Ordering** | Weekly menu + student balance tracking |
+| **👤 Student & Admin Panels** | Separate dashboards for each role |
+| **💰 Balance Management** | Admin can increase/decrease student balances |
 
-```bash
-# ایجاد محیط مجازی
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+---
 
-# نصب وابستگی‌ها
-pip install django django-crispy-forms crispy-bootstrap5 pillow
+## 🚀 Installation & Setup
 
-# مایگریشن
-python manage.py migrate
+### Prerequisites
+- Python 3.8+
+- pip
 
-# ایجاد داده نمونه
-python create_sample_data.py
+### Steps
 
-# اجرای سرور
-python manage.py runserver
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/GoldenIsland00/DormHub_Manager.git
+   cd DormHub_Manager
+   ```
+
+2. **Create a virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate      # Linux/Mac
+   venv\Scripts\activate         # Windows
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install django django-crispy-forms crispy-bootstrap5 pillow
+   ```
+
+4. **Run migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Create sample data** *(optional)*
+   ```bash
+   python create_sample_data.py
+   ```
+
+6. **Start the development server**
+   ```bash
+   python manage.py runserver
+   ```
+
+7. **Open your browser** and navigate to `http://127.0.0.1:8000`
+
+---
+
+## 🔑 Default Accounts
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `admin123` |
+| Student (Male) | `ali_rezaei` | `student123` |
+| Student (Female) | `sara_ahmadi` | `student123` |
+
+---
+
+## 📁 Project Structure
+
+```
+DormHub_Manager/
+├── dorm_system/          # Main project settings
+├── accounts/             # User authentication & dashboards
+├── dormitory/            # Building, room & bed management
+├── tickets/              # Ticket system & admin responses
+├── cafeteria/            # Menu, meal orders & transactions
+├── templates/            # HTML templates
+├── static/               # Static assets (CSS, JS, images)
+├── manage.py             # Django management script
+├── create_sample_data.py # Sample data generator
+└── db.sqlite3            # SQLite database
 ```
 
-## حساب‌های پیش‌فرض
+---
 
-| نقش | نام کاربری | رمز عبور |
-|-----|-----------|---------|
-| مدیر | admin | admin123 |
-| دانشجو | ali_rezaei | student123 |
-| دانشجو | sara_ahmadi | student123 |
+## 🧑‍💻 Usage Guide
 
-## ساختار پروژه
+1. **Log in** with an admin or student account
+2. **Switch themes** using the sun/moon icon in the navbar
+3. **Switch languages** from the language menu
+4. **Students** can:
+   - View their room and roommates
+   - Submit and track maintenance tickets
+   - Order meals from the weekly menu
+   - Check their balance
+5. **Admins** can manage all sections:
+   - Add/edit/delete rooms and beds
+   - Manage student balances
+   - Respond to tickets
+   - Configure weekly menus
 
-```
-dorm_system/          # تنظیمات اصلی
-accounts/             # کاربران، احراز هویت، داشبورد
-dormitory/            # ساختمان، اتاق، تخت
-tickets/              # سیستم تیکت و پاسخ
-cafeteria/            # منو، سفارش غذا، تراکنش‌ها
-templates/            # قالب‌های HTML
-```
+---
 
-## استفاده
+## ⚠️ Important Notes
 
-1. وارد شوید با حساب مدیر یا دانشجو
-2. تم را از آیکون ماه/خورشید تغییر دهید
-3. زبان را از منوی زبان تغییر دهید
-4. دانشجو می‌تواند اتاق خود، هم‌اتاقی‌ها، تیکت و سفارش غذا را ببیند
-5. مدیر همه بخش‌ها را مدیریت می‌کند
+- The **brothers' section** only accepts male students, and the **sisters' section** only accepts female students
+- **Meal orders** deduct from the student's balance automatically
+- **Admins** can increase or decrease any student's balance
 
-## نکات
+---
 
-- بخش برادران فقط دانشجویان پسر و بخش خواهران فقط دختران را می‌پذیرد
-- هنگام سفارش غذا موجودی کسر می‌شود
-- ادمین می‌تواند موجودی دانشجویان را افزایش/کاهش دهد
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | Django (Python) |
+| Frontend | HTML, CSS, JavaScript (with RTL support) |
+| Forms | django-crispy-forms + crispy-bootstrap5 |
+| Images | Pillow |
+| Database | SQLite (default) |
+
