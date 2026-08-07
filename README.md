@@ -1,203 +1,67 @@
-# 🏠 Bedroom System Manager
+# سیستم مدیریت خوابگاه و سلف دانشگاه
 
-<p align="center">
-  <img src="assets/logo.png" width="180" alt="Bedroom System Manager Logo">
-</p>
+یک سیستم حرفه‌ای مدیریت خوابگاه و سلف دانشگاه با Django
 
-<p align="center">
-  <strong>A Modern Bedroom & Smart Room Management System</strong><br>
-  Designed to simplify room management, inventory tracking, automation, and monitoring.
-</p>
+## ویژگی‌ها
 
-<p align="center">
+- **دوزبانه**: فارسی / انگلیسی (با پشتیبانی RTL)
+- **تم دارک و لایت**: قابل تغییر از نوار بالا
+- **خوابگاه دو بخشی**: بخش برادران و خواهران
+- **مدیریت اتاق و تخت**: نمایش هم‌اتاقی‌ها و شماره تخت
+- **سیستم تیکت**: گزارش مشکلات اتاق + پاسخ مدیر
+- **سفارش غذای هفتگی**: منوی هفتگی + موجودی هر دانشجو
+- **پنل دانشجو و پنل مدیر** جداگانه
+- **مدیریت موجودی** توسط ادمین
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![License](https://img.shields.io/github/license/GoldenIsland00/bedroom_system_manager?style=for-the-badge)
-![Stars](https://img.shields.io/github/stars/GoldenIsland00/bedroom_system_manager?style=for-the-badge)
-![Forks](https://img.shields.io/github/forks/GoldenIsland00/bedroom_system_manager?style=for-the-badge)
-![Issues](https://img.shields.io/github/issues/GoldenIsland00/bedroom_system_manager?style=for-the-badge)
-
-</p>
-
----
-
-# 📖 Overview
-
-**Bedroom System Manager** is a modern management system designed to organize and monitor bedroom resources efficiently.
-
-The project aims to provide a clean, scalable, and user-friendly platform for managing room-related information, inventory, furniture, users, maintenance records, and future smart automation capabilities.
-
-Whether used as a standalone management application or integrated into a larger smart-home ecosystem, this project focuses on simplicity, performance, and extensibility.
-
----
-
-# ✨ Features
-
-- 🛏️ Bedroom Management
-- 👤 User Management
-- 📦 Inventory Tracking
-- 🪑 Furniture Management
-- 🔍 Fast Search & Filtering
-- 📊 Dashboard & Statistics
-- 📁 Organized Data Structure
-- ⚡ High Performance
-- 🔐 Secure Architecture
-- 📱 Responsive Design
-- 🌙 Dark Mode Support
-- 🔄 Easy Data Management
-- 🛠️ Scalable Project Structure
-
----
-
-# 🚀 Planned Features
-
-- Smart Home Integration
-- IoT Device Support
-- QR Code Inventory
-- Barcode Scanner
-- Mobile Application
-- Cloud Synchronization
-- Multi-user Permissions
-- AI-based Recommendations
-- Notification System
-- Automatic Backup
-- REST API
-- Docker Deployment
-
----
-
-# 🛠️ Technology Stack
-
-| Category | Technology |
-|----------|------------|
-| Language | Python |
-| Backend | Flask / Django *(depending on your implementation)* |
-| Frontend | HTML5, CSS3, JavaScript |
-| Database | SQLite / PostgreSQL |
-| ORM | SQLAlchemy |
-| UI | Bootstrap |
-| Version Control | Git & GitHub |
-
----
-
-# 📂 Project Structure
-
-```
-bedroom_system_manager/
-│
-├── assets/
-│   ├── images/
-│   └── logo.png
-│
-├── static/
-│
-├── templates/
-│
-├── database/
-│
-├── app/
-│
-├── config/
-│
-├── requirements.txt
-│
-├── README.md
-│
-└── main.py
-```
-
----
-
-# ⚙️ Installation
-
-Clone the repository:
+## نصب و راه‌اندازی
 
 ```bash
-git clone https://github.com/GoldenIsland00/bedroom_system_manager.git
-```
-
-Move into the project directory:
-
-```bash
-cd bedroom_system_manager
-```
-
-Create a virtual environment:
-
-```bash
+# ایجاد محیط مجازی
 python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# نصب وابستگی‌ها
+pip install django django-crispy-forms crispy-bootstrap5 pillow
+
+# مایگریشن
+python manage.py migrate
+
+# ایجاد داده نمونه
+python create_sample_data.py
+
+# اجرای سرور
+python manage.py runserver
 ```
 
-Activate it:
+## حساب‌های پیش‌فرض
 
-### Windows
+| نقش | نام کاربری | رمز عبور |
+|-----|-----------|---------|
+| مدیر | admin | admin123 |
+| دانشجو | ali_rezaei | student123 |
+| دانشجو | sara_ahmadi | student123 |
 
-```bash
-venv\Scripts\activate
+## ساختار پروژه
+
+```
+dorm_system/          # تنظیمات اصلی
+accounts/             # کاربران، احراز هویت، داشبورد
+dormitory/            # ساختمان، اتاق، تخت
+tickets/              # سیستم تیکت و پاسخ
+cafeteria/            # منو، سفارش غذا، تراکنش‌ها
+templates/            # قالب‌های HTML
 ```
 
-### Linux / macOS
+## استفاده
 
-```bash
-source venv/bin/activate
-```
+1. وارد شوید با حساب مدیر یا دانشجو
+2. تم را از آیکون ماه/خورشید تغییر دهید
+3. زبان را از منوی زبان تغییر دهید
+4. دانشجو می‌تواند اتاق خود، هم‌اتاقی‌ها، تیکت و سفارش غذا را ببیند
+5. مدیر همه بخش‌ها را مدیریت می‌کند
 
-Install dependencies:
+## نکات
 
-```bash
-pip install -r requirements.txt
-```
-
-Run the project:
-
-```bash
-python main.py
-```
-
----
-
-# 📸 Screenshots
-
-| Dashboard | Inventory |
-|------------|-----------|
-| ![](assets/screenshots/dashboard.png) | ![](assets/screenshots/inventory.png) |
-
----
-
-# 📊 Future Roadmap
-
-- [ ] Authentication System
-- [ ] REST API
-- [ ] Docker Support
-- [ ] Mobile Version
-- [ ] AI Assistant
-- [ ] Cloud Backup
-- [ ] Smart Home Integration
-- [ ] Unit Testing
-- [ ] CI/CD Pipeline
-- [ ] Multi-language Support
-
----
-
-# 🧪 Testing
-
-Run tests using:
-
-```bash
-pytest
-```
-
----
-
-# 📈 Project Goals
-
-- Clean Architecture
-- Maintainable Code
-- Scalable Design
-- Modern UI/UX
-- High Performance
-- Easy Deployment
-- Open Source Friendly
-
-
-</p>
+- بخش برادران فقط دانشجویان پسر و بخش خواهران فقط دختران را می‌پذیرد
+- هنگام سفارش غذا موجودی کسر می‌شود
+- ادمین می‌تواند موجودی دانشجویان را افزایش/کاهش دهد
