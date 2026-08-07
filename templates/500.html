@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحه یافت نشد - 404</title>
+    <title>خطای سرور - 500</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -47,7 +47,7 @@
         
         .error-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
             z-index: 1;
         }
@@ -63,15 +63,14 @@
         
         .error-icon {
             font-size: 6rem;
-            color: #ef4444;
+            color: #dc2626;
             margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
+            animation: shake 0.5s ease infinite alternate;
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        @keyframes shake {
+            0% { transform: translateX(-5px) rotate(-5deg); }
+            100% { transform: translateX(5px) rotate(5deg); }
         }
         
         .error-title {
@@ -90,8 +89,41 @@
         .error-message {
             color: #6b7280;
             font-size: 1.1rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             line-height: 1.6;
+        }
+        
+        .error-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            text-align: right;
+            color: #7f1d1d;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .error-details.show {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 200px;
+            }
         }
         
         .error-actions {
@@ -99,6 +131,7 @@
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 1.5rem;
         }
         
         .error-btn {
@@ -125,6 +158,11 @@
             color: #374151;
         }
         
+        .error-btn.danger {
+            background: #dc2626;
+            color: white;
+        }
+        
         .error-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -135,11 +173,27 @@
         }
         
         .error-code {
-            margin-top: 2rem;
+            margin-top: 1rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e5e7eb;
             color: #9ca3af;
             font-size: 0.9rem;
+        }
+        
+        .toggle-details {
+            background: none;
+            border: none;
+            color: #6366f1;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .toggle-details:hover {
+            text-decoration: underline;
         }
         
         @media (max-width: 768px) {
@@ -200,16 +254,28 @@
     <div class="error-container">
         <div class="error-card">
             <div class="error-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-server"></i>
             </div>
             
-            <h1 class="error-title">۴۰۴</h1>
-            <h2 class="error-subtitle">صفحه مورد نظر یافت نشد</h2>
+            <h1 class="error-title">۵۰۰</h1>
+            <h2 class="error-subtitle">خطای داخلی سرور</h2>
             
             <p class="error-message">
-                متأسفیم! صفحه‌ای که به دنبال آن هستید وجود ندارد یا حذف شده است. 
-                ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه به آدرس دیگری منتقل شده باشد.
+                متأسفیم! خطایی در سرور رخ داده است. تیم فنی ما از این مشکل مطلع شده‌اند و در حال رسیدگی هستند.
+                لطفاً چند دقیقه دیگر مجدداً تلاش کنید.
             </p>
+            
+            <div id="errorDetails" class="error-details">
+                <p><strong>خطا:</strong> Internal Server Error</p>
+                <p><strong>زمان:</strong> <span id="errorTime"></span></p>
+                <p><strong>آدرس:</strong> <span id="errorUrl"></span></p>
+                <p><strong>مرورگر:</strong> <span id="errorBrowser"></span></p>
+            </div>
+            
+            <button id="toggleDetails" class="toggle-details">
+                <i class="fas fa-chevron-down"></i>
+                نمایش جزئیات خطا
+            </button>
             
             <div class="error-actions">
                 <a href="/" class="error-btn primary">
@@ -217,23 +283,45 @@
                     بازگشت به صفحه اصلی
                 </a>
                 
-                <button onclick="window.history.back()" class="error-btn secondary">
-                    <i class="fas fa-arrow-right"></i>
-                    بازگشت به صفحه قبل
-                </button>
+                <a href="mailto:support@dormitory.com" class="error-btn danger">
+                    <i class="fas fa-envelope"></i>
+                    گزارش خطا
+                </a>
             </div>
             
             <div class="error-code">
-                <p>کد خطا: 404 | صفحه یافت نشد</p>
-                <p>لطفاً از صحت آدرس وارد شده اطمینان حاصل فرمایید.</p>
+                <p>کد خطا: 500 | خطای داخلی سرور</p>
+                <p>لطفاً در صورت تکرار خطا، با پشتیبانی تماس بگیرید.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Add animation to page elements
         document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('.error-icon, .error-title, .error-subtitle, .error-message, .error-actions');
+            // Set error details
+            document.getElementById('errorTime').textContent = new Date().toLocaleString('fa-IR');
+            document.getElementById('errorUrl').textContent = window.location.href;
+            document.getElementById('errorBrowser').textContent = navigator.userAgent;
+            
+            // Toggle error details
+            const toggleBtn = document.getElementById('toggleDetails');
+            const detailsDiv = document.getElementById('errorDetails');
+            const chevronIcon = toggleBtn.querySelector('i');
+            
+            toggleBtn.addEventListener('click', function() {
+                detailsDiv.classList.toggle('show');
+                
+                if (detailsDiv.classList.contains('show')) {
+                    chevronIcon.className = 'fas fa-chevron-up';
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> مخفی کردن جزئیات خطا';
+                } else {
+                    chevronIcon.className = 'fas fa-chevron-down';
+                    toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> نمایش جزئیات خطا';
+                }
+            });
+            
+            // Add animation to page elements
+            const elements = document.querySelectorAll('.error-icon, .error-title, .error-subtitle, .error-message, .error-actions, .toggle-details');
             
             elements.forEach((element, index) => {
                 element.style.opacity = '0';
@@ -256,19 +344,19 @@
             // Create floating particles
             function createParticles() {
                 const particlesContainer = document.body;
-                const particleCount = 15;
+                const particleCount = 20;
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.style.cssText = `
                         position: absolute;
-                        width: ${Math.random() * 8 + 2}px;
-                        height: ${Math.random() * 8 + 2}px;
-                        background: rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1});
+                        width: ${Math.random() * 10 + 3}px;
+                        height: ${Math.random() * 10 + 3}px;
+                        background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2});
                         border-radius: 50%;
                         top: ${Math.random() * 100}%;
                         left: ${Math.random() * 100}%;
-                        animation: floatParticle ${Math.random() * 20 + 15}s linear infinite;
+                        animation: floatParticle ${Math.random() * 25 + 10}s linear infinite;
                         pointer-events: none;
                         z-index: 0;
                     `;
@@ -290,7 +378,7 @@
                             opacity: 1;
                         }
                         100% {
-                            transform: translate(${Math.random() * 100 - 50}px, -100vh) rotate(${Math.random() * 360}deg);
+                            transform: translate(${Math.random() * 150 - 75}px, -100vh) rotate(${Math.random() * 360}deg);
                             opacity: 0;
                         }
                     }
@@ -300,26 +388,41 @@
             
             createParticles();
             
-            // Add click sound for buttons
-            const buttons = document.querySelectorAll('.error-btn');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Optional: Add click sound here
-                    console.log('Button clicked:', this.textContent);
-                });
+            // Auto-refresh after 30 seconds
+            let refreshTimer = setTimeout(() => {
+                const shouldRefresh = confirm('سیستم بیش از ۳۰ ثانیه در حال انتظار است. آیا می‌خواهید صفحه مجدداً بارگذاری شود؟');
+                if (shouldRefresh) {
+                    window.location.reload();
+                }
+            }, 30000);
+            
+            // Clear timer if user navigates away
+            window.addEventListener('beforeunload', function() {
+                clearTimeout(refreshTimer);
             });
             
-            // Add keyboard navigation
+            // Add keyboard shortcuts
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    window.history.back();
-                } else if (e.key === 'Home' || e.key === 'h') {
+                if (e.key === 'r' && e.ctrlKey) {
+                    e.preventDefault();
+                    window.location.reload();
+                } else if (e.key === 'h' && e.ctrlKey) {
+                    e.preventDefault();
                     window.location.href = '/';
+                } else if (e.key === 'd' && e.ctrlKey) {
+                    e.preventDefault();
+                    toggleBtn.click();
                 }
             });
             
-            // Show current URL for debugging
-            console.log('404 Error - Requested URL:', window.location.href);
+            // Show helpful message in console
+            console.error('500 Internal Server Error');
+            console.info('Please check the server logs for more details.');
+            console.info('If you are the administrator, check the following:');
+            console.info('1. Server logs');
+            console.info('2. Database connection');
+            console.info('3. Application configuration');
+            console.info('4. File permissions');
         });
     </script>
 </body>
