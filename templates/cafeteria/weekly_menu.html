@@ -1,0 +1,59 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Weekly Menu" %}{% endblock %}
+{% block page_title %}{% trans "Weekly Food Menu" %}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-cup-hot"></i> {% trans "Weekly Food Menu" %}</h2>
+    <div class="btn-group">
+        <a href="?week={{ prev_week|date:'Y-m-d' }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-chevron-{% if LANGUAGE_CODE == 'fa' %}right{% else %}left{% endif %}"></i></a>
+        <span class="btn btn-outline-secondary btn-sm disabled">{{ week_start|date:"Y/m/d" }}</span>
+        <a href="?week={{ next_week|date:'Y-m-d' }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-chevron-{% if LANGUAGE_CODE == 'fa' %}left{% else %}right{% endif %}"></i></a>
+    </div>
+</div>
+
+<form method="post" action="{% url 'cafeteria:place_order' %}">
+    {% csrf_token %}
+    {% for day_name, meals in days.items %}
+    <div class="card mb-3">
+        <div class="card-header"><i class="bi bi-calendar3 me-1"></i> {{ day_name }}</div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for menu in meals %}
+                <div class="col-sm-6 col-lg-4">
+                    <label class="meal-card p-3 h-100 {% if menu.pk in my_orders %}border-success selected{% endif %}">
+                        <div class="d-flex align-items-start gap-2">
+                            {% if not user.is_admin_user and menu.pk not in my_orders %}
+                            <input type="checkbox" name="menu_items" value="{{ menu.pk }}" class="form-check-input meal-checkbox mt-1">
+                            {% endif %}
+                            <div class="flex-fill">
+                                <div class="text-secondary small">{{ menu.get_meal_time_display }}</div>
+                                <div class="fw-bold">{{ menu.meal_type.name_fa }}</div>
+                                <div class="text-success fw-semibold mt-1">{{ menu.meal_type.price|floatformat:0 }} {% trans "Toman" %}</div>
+                                {% if menu.pk in my_orders %}
+                                <span class="badge bg-success mt-1"><i class="bi bi-check"></i> {% trans "Ordered" %}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card"><div class="empty-state"><i class="bi bi-cup-hot d-block"></i>{% trans "No menu available for this week." %}</div></div>
+    {% endfor %}
+
+    {% if not user.is_admin_user and days %}
+    <div class="text-center mt-3 mb-4">
+        <button type="submit" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-cart-check"></i> {% trans "Place Order" %}
+        </button>
+        <p class="text-secondary small mt-2">
+            {% trans "Your balance" %}: <strong>{{ user.balance|floatformat:0 }}</strong> {% trans "Toman" %}
+        </p>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}

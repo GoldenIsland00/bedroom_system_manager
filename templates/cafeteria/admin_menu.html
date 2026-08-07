@@ -1,0 +1,57 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Menu" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">{% trans "Manage Weekly Menu" %} ({{ week_start }})</h2>
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header">{% trans "Add Menu Item" %}</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add">
+                        <div class="mb-3">
+                            <label class="form-label">{% trans "Day" %}</label>
+                            <select name="day" class="form-select" required>
+                                {% for val, label in days %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{% trans "Meal Time" %}</label>
+                            <select name="meal_time" class="form-select" required>
+                                {% for val, label in meal_times %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{% trans "Meal" %}</label>
+                            <select name="meal_type" class="form-select" required>
+                                {% for m in meal_types %}<option value="{{ m.pk }}">{{ m.name_fa }} ({{ m.price }})</option>{% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header">{% trans "Current Menu" %}</div>
+                <ul class="list-group list-group-flush">
+                    {% for m in menus %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ m.get_day_display }} - {{ m.get_meal_time_display }}: {{ m.meal_type.name_fa }}</span>
+                        <span>{{ m.meal_type.price|floatformat:0 }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">{% trans "No items this week." %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

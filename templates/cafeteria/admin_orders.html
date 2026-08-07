@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Orders" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">{% trans "Food Orders" %}</h2>
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Student" %}</th>
+                        <th>{% trans "Meal" %}</th>
+                        <th>{% trans "Price" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Date" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <td>{{ o.student.full_name }}</td>
+                        <td>{{ o.menu_item.meal_type.name_fa }} ({{ o.menu_item.get_day_display }})</td>
+                        <td>{{ o.price|floatformat:0 }}</td>
+                        <td>{{ o.get_status_display }}</td>
+                        <td>{{ o.ordered_at|date:"Y/m/d H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted">{% trans "No orders." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
