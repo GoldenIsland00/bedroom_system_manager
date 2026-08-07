@@ -1,0 +1,44 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Adjust Balance" %}{% endblock %}
+{% block page_title %}{% trans "Adjust Balance" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="page-header">
+            <h2><i class="bi bi-wallet2"></i> {% trans "Adjust Balance" %}</h2>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded" style="background:var(--bg-body);">
+                    <div style="width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;">
+                        {{ student.first_name|slice:":1"|default:student.username|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ student.full_name }}</div>
+                        <div class="text-secondary small">{{ student.student_id }}</div>
+                        <div class="mt-1">{% trans "Current" %}: <strong class="text-success">{{ student.balance|floatformat:0 }}</strong> {% trans "Toman" %}</div>
+                    </div>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Amount" %}</label>
+                        <input type="number" name="amount" class="form-control form-control-lg" required placeholder="{% trans 'Positive = deposit, Negative = withdraw' %}">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">{% trans "Description" %}</label>
+                        <input type="text" name="description" class="form-control" placeholder="{% trans 'Optional note...' %}">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-check-lg"></i> {% trans "Update" %}</button>
+                        <a href="{% url 'accounts:admin_students' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

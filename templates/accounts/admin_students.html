@@ -1,0 +1,82 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Students" %}{% endblock %}
+{% block page_title %}{% trans "Students Management" %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-people"></i> {% trans "Students Management" %}</h2>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">{% trans "Search" %}</label>
+                <input type="text" name="q" class="form-control" placeholder="{% trans 'Name, Student ID...' %}" value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Section" %}</label>
+                <select name="section" class="form-select">
+                    <option value="">{% trans "All" %}</option>
+                    <option value="brothers" {% if request.GET.section == 'brothers' %}selected{% endif %}>{% trans "Brothers" %}</option>
+                    <option value="sisters" {% if request.GET.section == 'sisters' %}selected{% endif %}>{% trans "Sisters" %}</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100"><i class="bi bi-search"></i> {% trans "Filter" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Student ID" %}</th>
+                    <th class="d-none d-md-table-cell">{% trans "Gender" %}</th>
+                    <th class="d-none d-lg-table-cell">{% trans "Room / Bed" %}</th>
+                    <th>{% trans "Balance" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.8rem;">
+                                {{ s.first_name|slice:":1"|default:s.username|slice:":1"|upper }}
+                            </div>
+                            <span class="fw-medium">{{ s.full_name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ s.student_id }}</td>
+                    <td class="d-none d-md-table-cell">{{ s.get_gender_display }}</td>
+                    <td class="d-none d-lg-table-cell">{% if s.bed %}{{ s.bed.room }} / {{ s.bed.bed_number }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+                    <td class="fw-medium">{{ s.balance|floatformat:0 }}</td>
+                    <td>
+                        <a href="{% url 'accounts:adjust_balance' s.pk %}" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-wallet2"></i> <span class="d-none d-sm-inline">{% trans "Balance" %}</span>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-people d-block"></i>
+                            {% trans "No students found." %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

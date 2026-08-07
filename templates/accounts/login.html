@@ -1,1 +1,50 @@
-
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'fa' %}rtl{% else %}ltr{% endif %}" data-theme="{{ request.session.theme|default:'light' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "ورود" %} | {% trans "سامانه خوابگاه" %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem;"><i class="fas fa-bed"></i></div>
+            <h2 style="margin:0;font-weight:700;">{% trans "ورود به سامانه خوابگاه" %}</h2>
+            <p style="opacity:0.9;margin:0.5rem 0 0;font-size:0.9rem;">{% trans "سیستم مدیریت هوشمند خوابگاه" %}</p>
+        </div>
+        <div style="padding:2rem;">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> {{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> {{ form.password.label }}</label>
+                    {{ form.password }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100" style="padding:0.9rem;margin-top:0.5rem;">
+                    <i class="fas fa-sign-in-alt"></i> {% trans "ورود به سیستم" %}
+                </button>
+            </form>
+            <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <a href="{% url 'set_language' %}?lang={% if LANGUAGE_CODE == 'fa' %}en{% else %}fa{% endif %}&next={{ request.path }}" style="margin:0 0.5rem;color:var(--text-secondary);font-size:0.85rem;">
+                    {% if LANGUAGE_CODE == 'fa' %}English{% else %}فارسی{% endif %}
+                </a>
+                <a href="{% url 'set_theme' %}?theme={% if request.session.theme == 'dark' %}light{% else %}dark{% endif %}&next={{ request.path }}" style="margin:0 0.5rem;color:var(--text-secondary);">
+                    <i class="fas fa-{% if request.session.theme == 'dark' %}sun{% else %}moon{% endif %}"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

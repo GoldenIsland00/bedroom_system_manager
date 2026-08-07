@@ -1,0 +1,102 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "داشبورد" %}{% endblock %}
+{% block content %}
+<div class="welcome-card">
+    <div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+        <div>
+            <h1 style="margin:0 0 0.4rem;font-size:1.5rem;">{% trans "خوش آمدید" %}، {{ user.first_name|default:user.username }}! 👋</h1>
+            <p style="margin:0;opacity:0.9;"><i class="fas fa-wallet"></i> {% trans "موجودی" %}: {{ user.balance|floatformat:0 }} {% trans "تومان" %}</p>
+        </div>
+        <div class="avatar avatar-lg">{{ user.first_name|slice:":1"|default:user.username|slice:":1"|upper }}</div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+        <div class="stat-value">{{ user.balance|floatformat:0 }}</div>
+        <div class="stat-label">{% trans "موجودی (تومان)" %}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+        <div class="stat-value">{% if bed %}{{ bed.room.number }}{% else %}—{% endif %}</div>
+        <div class="stat-label">{% trans "اتاق من" %}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-flag"></i></div>
+        <div class="stat-value">{{ my_tickets|length }}</div>
+        <div class="stat-label">{% trans "تیکت‌های اخیر" %}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+        <div class="stat-value">{{ my_orders|length }}</div>
+        <div class="stat-label">{% trans "سفارش‌های اخیر" %}</div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-door-closed"></i> {% trans "اتاق و هم‌اتاقی‌ها" %}</h4>
+                <a href="{% url 'dormitory:my_room' %}" class="btn btn-sm btn-outline-primary">{% trans "جزئیات" %}</a>
+            </div>
+            {% if bed %}
+            <p><strong>{% trans "ساختمان" %}:</strong> {{ bed.room.building.name }} ({{ bed.room.building.get_section_display }})</p>
+            <p><strong>{% trans "اتاق" %}:</strong> {{ bed.room.number }} | <strong>{% trans "تخت" %}:</strong> <span class="badge badge-primary">{{ bed.bed_number }}</span></p>
+            <hr style="border-color:var(--border);">
+            <h6>{% trans "هم‌اتاقی‌ها" %}</h6>
+            {% for r in roommates %}
+            <div class="d-flex justify-content-between align-items-center" style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <span>{{ r.student.full_name }}</span>
+                <span class="badge badge-secondary">{% trans "تخت" %} {{ r.bed_number }}</span>
+            </div>
+            {% empty %}
+            <p class="text-muted">{% trans "هم‌اتاقی ندارید." %}</p>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state"><i class="fas fa-door-open"></i>{% trans "هنوز اتاقی اختصاص داده نشده." %}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-flag"></i> {% trans "تیکت‌های من" %}</h4>
+                <a href="{% url 'tickets:create' %}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> {% trans "جدید" %}</a>
+            </div>
+            {% for t in my_tickets %}
+            <div class="d-flex justify-content-between align-items-center" style="padding:0.75rem 0;border-bottom:1px solid var(--border);">
+                <a href="{% url 'tickets:detail' t.pk %}" class="fw-medium">{{ t.title }}</a>
+                <span class="badge badge-status-{{ t.status }}">{{ t.get_status_display }}</span>
+            </div>
+            {% empty %}
+            <div class="empty-state"><i class="fas fa-inbox"></i>{% trans "تیکتی ندارید." %}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <h4 class="mb-3"><i class="fas fa-bolt"></i> {% trans "اقدامات سریع" %}</h4>
+    <div class="stats-grid" style="margin:0;">
+        <a href="{% url 'cafeteria:menu' %}" class="stat-card" style="text-decoration:none;color:inherit;">
+            <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+            <div class="stat-label">{% trans "سفارش غذا" %}</div>
+        </a>
+        <a href="{% url 'tickets:create' %}" class="stat-card" style="text-decoration:none;color:inherit;">
+            <div class="stat-icon"><i class="fas fa-flag"></i></div>
+            <div class="stat-label">{% trans "ثبت گزارش" %}</div>
+        </a>
+        <a href="{% url 'dormitory:my_room' %}" class="stat-card" style="text-decoration:none;color:inherit;">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-label">{% trans "هم‌اتاقی‌ها" %}</div>
+        </a>
+        <a href="{% url 'accounts:profile' %}" class="stat-card" style="text-decoration:none;color:inherit;">
+            <div class="stat-icon"><i class="fas fa-user-edit"></i></div>
+            <div class="stat-label">{% trans "ویرایش پروفایل" %}</div>
+        </a>
+    </div>
+</div>
+{% endblock %}
