@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Room" %} {{ room.number }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dormitory:building_list' %}">{% trans "Buildings" %}</a></li>
+            <li class="breadcrumb-item active">{{ room }}</li>
+        </ol>
+    </nav>
+    <h2 class="mb-4">{% trans "Room" %} {{ room.number }} - {{ room.building.name }}</h2>
+    <div class="row g-3">
+        {% for bed in room.beds.all %}
+        <div class="col-md-3">
+            <div class="card bed-card {% if bed.is_occupied %}occupied{% else %}empty{% endif %} shadow-sm">
+                <div class="card-body text-center">
+                    <h5>{% trans "Bed" %} {{ bed.bed_number }}</h5>
+                    {% if bed.is_occupied %}
+                    <p class="mb-1">{{ bed.student.full_name }}</p>
+                    <small class="text-muted">{{ bed.student.student_id }}</small>
+                    <div class="mt-2">
+                        <a href="{% url 'dormitory:assign_bed' bed.pk %}" class="btn btn-sm btn-warning">{% trans "Change" %}</a>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{% trans "Empty" %}</p>
+                    <a href="{% url 'dormitory:assign_bed' bed.pk %}" class="btn btn-sm btn-success">{% trans "Assign" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,38 @@
+{% extends "base/base.html" %}
+{% load i18n %}
 
+{% block title %}{% trans "Assign Bed" %}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:600px">
+    <h2 class="mb-4">{% trans "Assign Bed" %} {{ bed.bed_number }} - {{ bed.room }}</h2>
+    {% if bed.is_occupied %}
+    <div class="alert alert-warning">
+        {% trans "Currently occupied by" %}: <strong>{{ bed.student.full_name }}</strong>
+        <form method="post" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="release">
+            <button type="submit" class="btn btn-danger btn-sm">{% trans "Release Bed" %}</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">{% trans "Select Student" %}</label>
+                    <select name="student_id" class="form-select" required>
+                        <option value="">{% trans "— Select —" %}</option>
+                        {% for s in available_students %}
+                        <option value="{{ s.pk }}">{{ s.full_name }} ({{ s.student_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Assign" %}</button>
+                <a href="{% url 'dormitory:room_detail' bed.room_id %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section_display }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">{{ section_display }}</h2>
+    {% for building in buildings %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold">{{ building.name }}</div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for room in building.rooms.all %}
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>{% trans "Room" %} {{ room.number }}</h6>
+                            <small class="text-muted">{% trans "Floor" %} {{ room.floor }} | {% trans "Capacity" %} {{ room.capacity }}</small>
+                            <div class="mt-2">
+                                {% for bed in room.beds.all %}
+                                <span class="badge {% if bed.is_occupied %}bg-success{% else %}bg-secondary{% endif %} me-1" title="{% if bed.student %}{{ bed.student.full_name }}{% else %}{% trans 'Empty' %}{% endif %}">
+                                    {{ bed.bed_number }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'dormitory:room_detail' room.pk %}" class="btn btn-sm btn-outline-primary mt-2">{% trans "Manage" %}</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">{% trans "No buildings in this section." %}</p>
+    {% endfor %}
+</div>
+{% endblock %}
