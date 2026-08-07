@@ -1,1 +1,82 @@
+{% extends "base/base.html" %}
+{% load i18n %}
 
+{% block title %}{% trans "Ticket" %} #{{ ticket.pk }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <span>#{{ ticket.pk }} - {{ ticket.title }}</span>
+                    <span class="badge badge-status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
+                </div>
+                <div class="card-body">
+                    <p>{{ ticket.description|linebreaks }}</p>
+                    <div class="text-muted small">
+                        {% trans "By" %}: {{ ticket.student.full_name }} |
+                        {% trans "Category" %}: {{ ticket.get_category_display }} |
+                        {% trans "Priority" %}: {{ ticket.get_priority_display }} |
+                        {{ ticket.created_at|date:"Y/m/d H:i" }}
+                    </div>
+                </div>
+            </div>
+
+            <h5>{% trans "Replies" %}</h5>
+            {% for reply in replies %}
+            <div class="card mb-2 {% if reply.user.is_admin_user %}border-primary{% endif %}">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ reply.user.full_name }} {% if reply.user.is_admin_user %}<span class="badge bg-primary">{% trans "Admin" %}</span>{% endif %}</strong>
+                        <small class="text-muted">{{ reply.created_at|date:"Y/m/d H:i" }}</small>
+                    </div>
+                    <p class="mb-0 mt-1">{{ reply.message|linebreaks }}</p>
+                    {% if reply.is_internal %}<span class="badge bg-secondary">{% trans "Internal" %}</span>{% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">{% trans "No replies yet." %}</p>
+            {% endfor %}
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="reply" value="1">
+                        {% for field in reply_form %}
+                        <div class="mb-2">
+                            {% if field.name != 'is_internal' %}<label class="form-label">{{ field.label }}</label>{% endif %}
+                            {{ field }}
+                            {% if field.name == 'is_internal' %}<label class="form-check-label ms-1">{{ field.label }}</label>{% endif %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-sm">{% trans "Send Reply" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if user.is_admin_user and status_form %}
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header">{% trans "Admin Actions" %}</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="update_status" value="1">
+                        {% for field in status_form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-warning w-100">{% trans "Update Ticket" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

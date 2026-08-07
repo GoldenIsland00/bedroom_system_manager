@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Manage Tickets" %}{% endblock %}
+{% block page_title %}{% trans "Manage Tickets" %}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-ticket-perforated"></i> {% trans "Manage Tickets" %}</h2>
+    <div class="btn-group">
+        <a href="?" class="btn btn-sm btn-outline-secondary">{% trans "All" %}</a>
+        <a href="?status=open" class="btn btn-sm btn-outline-primary">{% trans "Open" %}</a>
+        <a href="?status=in_progress" class="btn btn-sm btn-outline-warning">{% trans "In Progress" %}</a>
+        <a href="?status=resolved" class="btn btn-sm btn-outline-success">{% trans "Resolved" %}</a>
+    </div>
+</div>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans "Title" %}</th>
+                    <th class="d-none d-md-table-cell">{% trans "Student" %}</th>
+                    <th class="d-none d-lg-table-cell">{% trans "Room" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th class="d-none d-lg-table-cell">{% trans "Date" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tickets %}
+                <tr style="cursor:pointer" onclick="location='{% url 'tickets:detail' t.pk %}'">
+                    <td class="text-muted">{{ t.pk }}</td>
+                    <td class="fw-medium">{{ t.title }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.student.full_name }}</td>
+                    <td class="d-none d-lg-table-cell">{% if t.room %}{{ t.room }}{% else %}—{% endif %}</td>
+                    <td><span class="badge badge-priority-{{ t.priority }}">{{ t.get_priority_display }}</span></td>
+                    <td><span class="badge badge-status-{{ t.status }}">{{ t.get_status_display }}</span></td>
+                    <td class="d-none d-lg-table-cell text-muted">{{ t.created_at|date:"Y/m/d" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox d-block"></i>{% trans "No tickets." %}</div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

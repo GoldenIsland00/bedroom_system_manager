@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "My Tickets" %}{% endblock %}
+{% block page_title %}{% trans "My Tickets" %}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-ticket-perforated"></i> {% trans "My Tickets" %}</h2>
+    <a href="{% url 'tickets:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> {% trans "New Ticket" %}</a>
+</div>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans "Title" %}</th>
+                    <th class="d-none d-md-table-cell">{% trans "Category" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th class="d-none d-lg-table-cell">{% trans "Date" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tickets %}
+                <tr style="cursor:pointer" onclick="location='{% url 'tickets:detail' t.pk %}'">
+                    <td class="text-muted">{{ t.pk }}</td>
+                    <td class="fw-medium">{{ t.title }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.get_category_display }}</td>
+                    <td><span class="badge badge-priority-{{ t.priority }}">{{ t.get_priority_display }}</span></td>
+                    <td><span class="badge badge-status-{{ t.status }}">{{ t.get_status_display }}</span></td>
+                    <td class="d-none d-lg-table-cell text-muted">{{ t.created_at|date:"Y/m/d" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox d-block"></i>{% trans "No tickets found." %}</div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
